@@ -1,0 +1,9 @@
+
+lpython:S1192R"ODefine a constant instead of duplicating this literal "Ğ£Ğ´Ğ°Ğ»ĞµĞ½Ğ¾" 3 times.(¦´“Ãÿÿÿÿÿ
+rpython:S1192"ZDefine a constant instead of duplicating this literal "Ğ”Ğ°Ñ‚Ğ° ÑĞ¾Ğ·Ğ´Ğ°Ğ½Ğ¸Ñ" 4 times.(ß„©
+6python:S125j"Remove this commented out code.(Â’Ï—
+python:S101Ö"iRename class "dictTypeMiracle" to match the regular expression ^_?([A-Z_][a-zA-Z0-9]*|[a-z_][a-z0-9_]*)$.(˜£µé
+ƒpython:S101ò"fRename class "dictProgress" to match the regular expression ^_?([A-Z_][a-zA-Z0-9]*|[a-z_][a-z0-9_]*)$.(û• ¼üÿÿÿÿ
+‚python:S101"jRename class "dictViewProgress" to match the regular expression ^_?([A-Z_][a-zA-Z0-9]*|[a-z_][a-z0-9_]*)$.(Ï•ëÁ
+„python:S101‘"lRename class "dictStatusProgress" to match the regular expression ^_?([A-Z_][a-zA-Z0-9]*|[a-z_][a-z0-9_]*)$.(ÖÓÓæ
+ƒpython:S101¢"kRename class "dictLevelProgress" to match the regular expression ^_?([A-Z_][a-zA-Z0-9]*|[a-z_][a-z0-9_]*)$.(¤ËÄø
