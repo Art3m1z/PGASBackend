@@ -74,11 +74,18 @@ class CommentsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class DataInfoMiracleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DataInfoMiracle
+        exclude = ['id', 'type_miracle']
+
+
 class RequestSerializer(serializers.ModelSerializer):
     typeMiracle = NominationsSerializers(read_only=True)
     student = StudentSerializer(read_only=True)
     compaing = CompaingSerializer(read_only=True)
     comments = CommentsSerializer(many=True, read_only=True)
+    data = DataInfoMiracleSerializer(many=True, read_only=True)
 
     class Meta:
         model = Request
@@ -95,12 +102,6 @@ class ListNotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['id', 'text']
-
-
-class DataInfoMiracleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DataInfoMiracle
-        exclude = ['id', 'point', 'type_micacle']
 
 
 class BigBoysSerializer(serializers.ModelSerializer):

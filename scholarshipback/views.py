@@ -379,6 +379,7 @@ class CreateRequestView(CustomAuthMiddleware, APIView):
 class AddCommentView(CustomAuthMiddleware, APIView):
 
     def post(self, request: APIRequest):
+        print(request.data)
         req: Request = get_object_or_404(Request, id=request.data['id'])
 
         if request.data['text'].strip() == '':
@@ -407,7 +408,10 @@ class AddCommentView(CustomAuthMiddleware, APIView):
 class SetImageView(CustomAuthMiddleware, APIView):
 
     def post(self, request: APIRequest):
+        print(request.FILES)
         img: InMemoryUploadedFile = request.FILES['image']
+
+        print(img)
 
         if img.size > 10485760:
             return Response({'detail': 'Файл должен быть до 10 МБ!'}, 400)
@@ -424,34 +428,60 @@ class SaveRequestView(CustomAuthMiddleware, APIView):
 
     def post(self, request: APIRequest):
         req: Request = get_object_or_404(Request, id=request.data['id'])
+        achivement_id = request.data['achivementId']
+        achivement_file_link = request.data['achivementFileLink']
 
-        # if now().timestamp() > req.compaing.date_end.timestamp():
-        #     return Response({'detail': 'Время работы кампании истекло!'}, 400)
+        for index, item in enumerate(request.data['componentInfo']):
+            print(index)
+            try:
+                data_info_miracle = DataInfoMiracle.objects.get(id=achivement_id[index])
+                print(data_info_miracle)
+                data_info_miracle.name = item['achivement']
+                data_info_miracle.progress = item['miracle']
+                data_info_miracle.view_progress = item['typeMiracle']
+                data_info_miracle.status_progress = item['stateMiracle']
+                data_info_miracle.level_progress = item['levelMiracle']
+                data_info_miracle.date_event = item['dateAchivement']
+                data_info_miracle.number_of_docs = item['documentNumber']
+                data_info_miracle.linkDocs = achivement_file_link[index]
+                data_info_miracle.save()
+                req.LastUpdate = now()
+                req.save()
 
-        for d, t in zip(req.data.all(), request.data['data']):
-            if t['data'][0].strip() == '':
-                return Response({'detail': 'Поля "Название" и "Документ" обязательные!'}, 400)
+                HistoryChangeRequest.objects.create(
+                    student=req.student,
+                    json=json.dumps(_from_models_to_json([req]))
+                )
 
-            d.name = t['data'][0]
-            d.progress = t['data'][1]
-            d.view_progress = t['data'][2]
-            d.status_progress = t['data'][3]
-            d.level_progress = t['data'][4]
-            d.date_event = t['data'][5]
-            d.number_of_docs = t['data'][6]
-            d.linkDocs = t['data'][7]
+            except Exception as err:
+                print(err)
+                return Response(str(err), status=status.HTTP_400_BAD_REQUEST)
 
-            d.save()
+        return Response(status=status.HTTP_201_CREATED)
+        # for d, t in zip(req.data.all(), request.data['data']):
+        #     if t['data'][0].strip() == '':
+        #         return Response({'detail': 'Поля "Название" и "Документ" обязательные!'}, 400)
+        #
+        #     d.name = t['data'][0]
+        #     d.progress = t['data'][1]
+        #     d.view_progress = t['data'][2]
+        #     d.status_progress = t['data'][3]
+        #     d.level_progress = t['data'][4]
+        #     d.date_event = t['data'][5]
+        #     d.number_of_docs = t['data'][6]
+        #     d.linkDocs = t['data'][7]
+        #
+        #     d.save()
+        #
+        # req.LastUpdate = now()
+        # req.save()
 
-        req.LastUpdate = now()
-        req.save()
+        # HistoryChangeRequest.objects.create(
+        #     student=req.student,
+        #     json=json.dumps(_from_models_to_json([req]))
+        # )
 
-        HistoryChangeRequest.objects.create(
-            student=req.student,
-            json=json.dumps(_from_models_to_json([req]))
-        )
-
-        return Response(status=204)
+        # return Response(status=status.HTTP_200_OK)
 
 
 class AddRowView(CustomAuthMiddleware, APIView):
@@ -460,20 +490,7 @@ class AddRowView(CustomAuthMiddleware, APIView):
         req: Request = get_object_or_404(Request, id=request.data['id'])
         t = request.data
 
-        # if now().timestamp() > req.compaing.date_end.timestamp():
-        #     return Response({'detail': 'Время работы кампании истекло!'}, 400)
-
         d = DataInfoMiracle()
-
-        d.name = t['data'][0]
-        d.progress = t['data'][1]
-        d.view_progress = t['data'][2]
-        d.status_progress = t['data'][3]
-        d.level_progress = t['data'][4]
-        d.date_event = t['data'][5]
-        d.number_of_docs = t['data'][6]
-        d.linkDocs = t['data'][7]
-
         d.save()
 
         req.data.add(d)
@@ -779,9 +796,6 @@ class RemoveDataRowView(CustomAuthMiddleware, APIView):
 
     def post(self, request: APIRequest):
         req: Request = get_object_or_404(Request, id=request.data['id'])
-
-        # if now().timestamp() > req.compaing.date_end.timestamp():
-        #     return Response({'detail': 'Время работы кампании истекло!'}, 400)
 
         req.data.filter(id=request.data['bodyId'])[0].delete()
 

@@ -103,89 +103,6 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-# class dictTypeEvent(models.Model):
-#     '''Справочник вида мероприятия, зависит от типа стипендии'''
-#     name = models.CharField("Название", max_length=255)
-#     type_miracle = models.ForeignKey(dictTypeMiracle, on_delete=models.CASCADE)
-#     CreatedOn = models.DateField()
-#     isDeleted = models.BooleanField("Удалено", default=False)
-#
-#     def __str__(self) -> str:
-#         return self.name
-#
-#
-# class dictStatusEvent(models.Model):
-#     '''Справочник статуса мероприятия '''
-#     name = models.CharField("Название", max_length=255)
-#     type_miracle = models.ForeignKey(dictTypeMiracle, on_delete=models.CASCADE)
-#     CreatedOn = models.DateField()
-#     isDeleted = models.BooleanField("Удалено", default=False)
-#
-#     def __str__(self) -> str:
-#         return self.name
-#
-#
-# class dictTypeWork(models.Model):
-#     '''Справочник вида работ, зависит от типа стипендии'''
-#     name = models.CharField("Название", max_length=255)
-#     type_miracle = models.ForeignKey(dictTypeMiracle, on_delete=models.CASCADE)
-#     CreatedOn = models.DateField()
-#     isDeleted = models.BooleanField("Удалено", default=False)
-#
-#     def __str__(self) -> str:
-#         return self.name
-#
-#
-# class dictRoleStudentToWork(models.Model):
-#     ''' Справочник роли студента в мероприятии '''
-#     name = models.CharField("Название", max_length=255)
-#     type_miracle = models.ForeignKey(dictTypeMiracle, on_delete=models.CASCADE)
-#     CreatedOn = models.DateField()
-#     isDeleted = models.BooleanField("Удалено", default=False)
-#
-#     def __str__(self) -> str:
-#         return self.name
-#
-#
-# class dictWinnerPlace(models.Model):
-#     name = models.CharField("Название", max_length=255)
-#     type_miracle = models.ForeignKey(dictTypeMiracle, on_delete=models.CASCADE)
-#     CreatedOn = models.DateField()
-#     isDeleted = models.BooleanField("Удалено", default=False)
-#
-#     def __str__(self) -> str:
-#         return self.name
-#
-#
-# class DataInfoMiracle(models.Model):
-#     "Таблища с данными предоставленные студентом на стипендию"
-#     type_micacle = models.CharField(max_length=256)
-#     type_event = models.CharField(max_length=256)
-#     type_work = models.CharField(max_length=256)
-#     date_event = models.CharField(max_length=256)
-#     number_of_docs = models.CharField("Номер документа", max_length=256)
-#     winner_place = models.CharField(max_length=256)
-#     role_student = models.CharField(max_length=256)
-#     linkDocs = models.FileField(upload_to='uploads/')
-#     point = models.PositiveIntegerField(default=0)
-#
-#
-# class RequestOld(models.Model):
-#     '''Заявка пользователя на стипендию'''
-#     compaing = models.ForeignKey(Compaing, on_delete=models.CASCADE)
-#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-#     typeMiracle = models.ForeignKey(dictTypeMiracle, on_delete=models.CASCADE)
-#     learningPlan = models.ForeignKey(dictLearningPlan, on_delete=models.CASCADE)
-#     last_status = models.CharField("Текущий статус", max_length=156)
-#     CreatedOn = models.DateTimeField("Дата создания", default=datetime.datetime.now())
-#     LastUpdate = models.DateTimeField("Последнее изменеиние", default=datetime.datetime.now())
-#     isDeleted = models.BooleanField("Удалено", default=False)
-#     comments = models.ManyToManyField(Comments, blank=True)
-#     #data = models.ManyToManyField(DataInfoMiracle)
-#     data = models.OneToOneField(DataInfoMiracle, on_delete=models.CASCADE)
-#     learning_nomination_data = models.ForeignKey(LearningNominationData, models.CASCADE, blank=True, null=True)
-
-
 class Notification(models.Model):
     """ Объявления """
     text = models.CharField(max_length=500)
@@ -196,16 +113,17 @@ class Notification(models.Model):
 
 class DataInfoMiracle(models.Model):
     "Таблища с данными предоставленные студентом на стипендию"
-    type_miracle = models.CharField(max_length=256)  # номинация
-    name = models.CharField(max_length=512, default="")  # Название мероприятия
-    progress = models.CharField(max_length=256)  # Достижение
-    view_progress = models.CharField(max_length=256)  # Вид достижения
-    status_progress = models.CharField(max_length=512)  # Статус мероприятия(международный, региональный)
-    level_progress = models.CharField(max_length=512)  # Уровень достижения
-    date_event = models.DateField("Дата мероприятия")  # Дата мероприятия
-    number_of_docs = models.CharField("Номер документа", max_length=256)
-    linkDocs = models.TextField(blank=True)
-    point = models.PositiveIntegerField(default=0)
+    type_miracle = models.CharField(max_length=256, blank=True, null=True)  # номинация
+    name = models.CharField(max_length=512, default="", blank=True, null=True)  # Название мероприятия
+    progress = models.CharField(max_length=256, blank=True, null=True)  # Достижение
+    view_progress = models.CharField(max_length=256, blank=True, null=True)  # Вид достижения
+    status_progress = models.CharField(max_length=512, blank=True, null=True)  # Статус мероприятия(международный, региональный)
+    level_progress = models.CharField(max_length=512, blank=True, null=True)  # Уровень достижения
+    date_event = models.DateField("Дата мероприятия", blank=True, null=True)  # Дата мероприятия
+    number_of_docs = models.CharField("Номер документа", max_length=256, blank=True, null=True)
+    linkDocs = models.TextField(blank=True, null=True)
+    point = models.PositiveIntegerField(default=0, blank=True, null=True)
+
 
     class Meta:
         verbose_name = verbose_name_plural = 'Таблица с данными предоставленные студентом на стипендию'
@@ -289,7 +207,7 @@ class dictStatusProgress(models.Model):
 
 class dictLevelProgress(models.Model):
     '''Уровень достижения'''
-    typemiracle = models.ForeignKey(DictTypeMiracle, related_name="dict_level_progress",on_delete=models.CASCADE)
+    typemiracle = models.ForeignKey(DictTypeMiracle, related_name="dict_level_progress", on_delete=models.CASCADE)
     dictprogress = models.ForeignKey(DictProgress, on_delete=models.CASCADE)
     dictviewprogress = models.ForeignKey(dictViewProgress, on_delete=models.CASCADE)
     dictstatusprogress = models.ForeignKey(dictStatusProgress, on_delete=models.CASCADE)
