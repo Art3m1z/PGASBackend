@@ -313,25 +313,25 @@ class NotificationDetailView(CustomAuthMiddleware, APIView):
         return Response(status=204)
 
 
-class SetAdminPointForRow(CustomAuthMiddleware, APIView):
+class SetAdminPointForRow(CustomAuthMiddleware , APIView):
 
-    def post(self, request: APIRequest):
-        req: Request = get_object_or_404(Request, id=request.data['id'])
+    def post(self , request: APIRequest):
         token = request.headers['Authorization'].split('Bearer ')[1]
 
-        data = jwt.decode(token, settings.SECRET_KEY, [settings.ALGORITHM],
-                          {'verify_exp': True, 'verify_signature': True})
+        data = jwt.decode(token , settings.SECRET_KEY , [settings.ALGORITHM] ,
+                          {'verify_exp': True , 'verify_signature': True})
 
-        get_object_or_404(Admin, id=data['id'])
+        get_object_or_404(Admin , id=data['id'])
 
         if data['role'] != 'admin':
-            return Response({'detail': 'No credentials!'}, 403)
-
-        for d, p in zip(req.data.all(), request.data['data']):
-            d.point = int(p)
-            d.save()
-
-        return Response(status=204)
+            return Response({'detail': 'No credentials!'} , 403)
+        try:
+            data_info_miracle = DataInfoMiracle.objects.get(id=request.data['dataId'])
+            data_info_miracle.point = request.data['score']
+            data_info_miracle.save()
+            return Response(status=status.HTTP_200_OK)
+        except Exception as err:
+            return Response(str(err), status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateRequestView(CustomAuthMiddleware, APIView):

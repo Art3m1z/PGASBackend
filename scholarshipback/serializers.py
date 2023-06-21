@@ -77,7 +77,7 @@ class CommentsSerializer(serializers.ModelSerializer):
 class DataInfoMiracleSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataInfoMiracle
-        exclude = ['id', 'type_miracle']
+        exclude = ['type_miracle']
 
 
 class RequestSerializer(serializers.ModelSerializer):
