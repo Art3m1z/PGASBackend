@@ -22,10 +22,12 @@ urlpatterns = [
     path('companies/check-show-student-points/', views.CheckShowStudentPointsView.as_view()),
 
     path('requests/get/', views.RequestViewList.as_view()),
+    path('requests/get/<int:pk>', views.RequestViewList.as_view()),
     path('requests/set-admin-row-point/', views.SetAdminPointForRow.as_view()),
     path('requests/save/', views.SaveRequestView.as_view()),
     path('requests/learning/save/', views.SaveLearingRequestView.as_view()),
     path('requests/create/', views.CreateRequestView.as_view()),
+
     path('requests/remove-data/', views.RemoveDataRowView.as_view()),
     path('requests/add-row/', views.AddRowView.as_view()),
     path('notifications/get/', views.NotificationListView.as_view()),

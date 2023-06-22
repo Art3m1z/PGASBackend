@@ -1,6 +1,6 @@
 import datetime
 import json
-
+from datetime import datetime
 import jwt
 import pandas
 from django.conf import settings
@@ -277,6 +277,11 @@ class RequestViewList(CustomAuthMiddleware, APIView, PageNumberPagination):
 
         return Response(status=204)
 
+    def delete(self, request: APIRequest, pk):
+        req = Request.objects.get(id=pk)
+        req.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     def put(self, request):
         # этим запросом устанавливают статус заявки
         req: Request = get_object_or_404(Request, id=request.data['id'])
@@ -408,10 +413,7 @@ class AddCommentView(CustomAuthMiddleware, APIView):
 class SetImageView(CustomAuthMiddleware, APIView):
 
     def post(self, request: APIRequest):
-        print(request.FILES)
         img: InMemoryUploadedFile = request.FILES['image']
-
-        print(img)
 
         if img.size > 10485760:
             return Response({'detail': 'Файл должен быть до 10 МБ!'}, 400)
@@ -426,22 +428,22 @@ class SetImageView(CustomAuthMiddleware, APIView):
 
 class SaveRequestView(CustomAuthMiddleware, APIView):
 
-    def post(self, request: APIRequest):
+    def post(self, request: APIRequest, default=None):
         req: Request = get_object_or_404(Request, id=request.data['id'])
         achivement_id = request.data['achivementId']
         achivement_file_link = request.data['achivementFileLink']
 
         for index, item in enumerate(request.data['componentInfo']):
-            print(index)
+            print(item['dateAchivement'])
             try:
                 data_info_miracle = DataInfoMiracle.objects.get(id=achivement_id[index])
-                print(data_info_miracle)
                 data_info_miracle.name = item['achivement']
                 data_info_miracle.progress = item['miracle']
                 data_info_miracle.view_progress = item['typeMiracle']
                 data_info_miracle.status_progress = item['stateMiracle']
                 data_info_miracle.level_progress = item['levelMiracle']
-                data_info_miracle.date_event = item['dateAchivement']
+                if item['dateAchivement'] != '':
+                    data_info_miracle.date_event = datetime.strptime(item['dateAchivement'], "%Y-%m-%d")
                 data_info_miracle.number_of_docs = item['documentNumber']
                 data_info_miracle.linkDocs = achivement_file_link[index]
                 data_info_miracle.save()
